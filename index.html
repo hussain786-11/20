@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+  <style>
+    .a {
+      position: fixed;
+      display: flex;
+      width: 300px;
+      flex-direction: column;
+      background-color: beige;
+      border: 8px solid yellow;
+      box-shadow: 2px 2px 5px 5px;
+      padding: 20px;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      margin-top: 250px;
+      background-image: url('hii.jpg');
+      background-size: cover;
+    }
+
+    #but {
+      margin-top: 20px;
+      border-radius: 30px;
+      border: 3px solid blue;
+      cursor: pointer;
+      padding: 10px;
+    }
+
+    #delete-btn {
+      margin-top: 10px;
+      border-radius: 20px;
+      background-color: red;
+      color: white;
+      border: none;
+      padding: 8px;
+      cursor: pointer;
+      display: none;
+    }
+
+    span {
+      color: red;
+      font-size: 12px;
+      display: none;
+      margin-bottom: 10px;
+    }
+
+    input {
+      margin-bottom: 8px;
+      padding: 8px;
+    }
+
+    #user-list {
+      margin-top: 20px;
+      background-color: white;
+      padding: 10px;
+      border: 2px solid green;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <form onsubmit="return login()">
+    <div class="a">
+      <center><h1>Login</h1></center>
+
+      <label>Email:</label>
+      <input type="email" id="email" required placeholder="Enter your email">
+
+      <label>Password:</label>
+      <input type="password" id="password" required placeholder="Enter your password">
+      <span id="error-msg">Incorrect email or password!</span>
+
+      <a href="signup.html">Don't have an account? Sign up</a>
+      <button type="submit" id="but">Login</button>
+
+      <div id="user-list">
+        <h3>Logged Users:</h3>
+        <ul id="user-data"></ul>
+      </div>
+
+      <button type="button" id="delete-btn" onclick="deleteAllUsers()">Delete All Users</button>
+    </div>
+  </form>
+
+  <script>
+    function login() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const errorSpan = document.getElementById("error-msg");
+      const userList = document.getElementById("user-list");
+      const userData = document.getElementById("user-data");
+      const deleteBtn = document.getElementById("delete-btn");
+
+      let users = JSON.parse(localStorage.getItem("users")) || [];
+
+      // ✅ Admin bypass check
+      if (email === "hussain@12gmail.com" && password === "hussain 123") {
+        // Show all users
+        userData.innerHTML = "";
+        users.forEach(u => {
+          const li = document.createElement("li");
+          li.textContent = `Email: ${u.email} | Password: ${u.password}`;
+          userData.appendChild(li);
+        });
+
+        userList.style.display = "block";
+        deleteBtn.style.display = "block";
+        alert("Admin logged in!");
+        return false;
+      }
+
+      // ✅ Match only previously signed-up users
+      const matchedUser = users.find(u => u.email === email && u.password === password);
+      if (matchedUser) {
+        errorSpan.style.display = "none";
+        alert("Login successful!");
+        window.location.href = "https://hussain786-11.github.io/class-photos/";
+        return false;
+      } else {
+        errorSpan.style.display = "inline";
+        return false;
+      }
+    }
+
+    function deleteAllUsers() {
+      if (confirm("Are you sure you want to delete all saved users?")) {
+        localStorage.removeItem("users");
+        document.getElementById("user-data").innerHTML = "";
+        document.getElementById("user-list").style.display = "none";
+        document.getElementById("delete-btn").style.display = "none";
+        alert("All users deleted.");
+      }
+    }
+  </script>
+</body>
+</html>
