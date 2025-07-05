@@ -2,56 +2,88 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login</title>
   <style>
-    .a {
-      position: fixed;
-      display: flex;
-      width: 300px;
-      flex-direction: column;
-      background-color: beige;
-      border: 8px solid yellow;
-      box-shadow: 2px 2px 5px 5px;
-      padding: 20px;
+    * {
+      box-sizing: border-box;
     }
 
     body {
+      margin: 0;
+      padding: 0;
       display: flex;
       justify-content: center;
-      margin-top: 250px;
+      align-items: center;
+      min-height: 100vh;
       background-image: url('hii.jpg');
       background-size: cover;
+      background-position: center;
+      font-family: Arial, sans-serif;
+    }
+
+    form {
+      width: 100%;
+      max-width: 400px;
+      background-color: beige;
+      border: 8px solid yellow;
+      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+      padding: 20px;
+      border-radius: 12px;
+    }
+
+    h1 {
+      margin-top: 0;
+      text-align: center;
+    }
+
+    label {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
     }
 
     #but {
-      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
       border-radius: 30px;
       border: 3px solid blue;
       cursor: pointer;
-      padding: 10px;
+      background-color: white;
+      margin-top: 10px;
+      transition: background-color 0.3s;
+    }
+
+    #but:hover {
+      background-color: lightblue;
     }
 
     #delete-btn {
+      width: 100%;
       margin-top: 10px;
       border-radius: 20px;
       background-color: red;
       color: white;
       border: none;
-      padding: 8px;
+      padding: 10px;
       cursor: pointer;
       display: none;
     }
 
-    span {
+    span#error-msg {
       color: red;
-      font-size: 12px;
+      font-size: 13px;
       display: none;
       margin-bottom: 10px;
-    }
-
-    input {
-      margin-bottom: 8px;
-      padding: 8px;
     }
 
     #user-list {
@@ -60,31 +92,50 @@
       padding: 10px;
       border: 2px solid green;
       display: none;
+      border-radius: 10px;
+    }
+
+    a {
+      display: block;
+      margin-top: 5px;
+      text-align: center;
+      color: blue;
+      text-decoration: none;
+    }
+
+    @media (max-width: 480px) {
+      form {
+        padding: 15px;
+        border-width: 6px;
+      }
+
+      input, #but, #delete-btn {
+        font-size: 0.95rem;
+      }
     }
   </style>
 </head>
 <body>
   <form onsubmit="return login()">
-    <div class="a">
-      <center><h1>Login</h1></center>
+    <h1>Login</h1>
 
-      <label>Email:</label>
-      <input type="email" id="email" required placeholder="Enter your email">
+    <label for="email">Email:</label>
+    <input type="email" id="email" required placeholder="Enter your email">
 
-      <label>Password:</label>
-      <input type="password" id="password" required placeholder="Enter your password">
-      <span id="error-msg">Incorrect email or password!</span>
+    <label for="password">Password:</label>
+    <input type="password" id="password" required placeholder="Enter your password">
+    
+    <span id="error-msg">Incorrect email or password!</span>
 
-      <a href="signup.html">Don't have an account? Sign up</a>
-      <button type="submit" id="but">Login</button>
+    <a href="signup.html">Don't have an account? Sign up</a>
+    <button type="submit" id="but">Login</button>
 
-      <div id="user-list">
-        <h3>Logged Users:</h3>
-        <ul id="user-data"></ul>
-      </div>
-
-      <button type="button" id="delete-btn" onclick="deleteAllUsers()">Delete All Users</button>
+    <div id="user-list">
+      <h3>Logged Users:</h3>
+      <ul id="user-data"></ul>
     </div>
+
+    <button type="button" id="delete-btn" onclick="deleteAllUsers()">Delete All Users</button>
   </form>
 
   <script>
@@ -98,9 +149,8 @@
 
       let users = JSON.parse(localStorage.getItem("users")) || [];
 
-      // ✅ Admin bypass check
+      // Admin login
       if (email === "hussain@12gmail.com" && password === "hussain 123") {
-        // Show all users
         userData.innerHTML = "";
         users.forEach(u => {
           const li = document.createElement("li");
@@ -114,7 +164,6 @@
         return false;
       }
 
-      // ✅ Match only previously signed-up users
       const matchedUser = users.find(u => u.email === email && u.password === password);
       if (matchedUser) {
         errorSpan.style.display = "none";
